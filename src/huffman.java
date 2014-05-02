@@ -65,24 +65,7 @@ public class huffman {
 		}
 	}
 
-	/*public static class AuthorRatioPair
-	{
-		private String name = null ;
-		private double ratio = 0;
-		public AuthorRatioPair(String name , double ratio)
-		{
-			this.name = name ;
-			this.ratio = ratio;
-		}
-		public String GiveName ()
-		{
-			return this.name;
-		}
-		public double GiveRatio()
-		{
-			return this.ratio;
-		}
-	}*/
+	
 	/*
 	 * library 
 	 */
@@ -90,19 +73,36 @@ public class huffman {
 	// only 2 genres
 	public static String[] genres = new String[2];
 
-	//public static String[] subgenresArray = new String[8];
-
+	/* string variable store the name of genre and hashMap<String,Integer> keep track of the number of appearance of certain word 
+	 * in the corresponding genre
+	 */
 	public static HashMap<String, HashMap<String,Integer>> genre = new HashMap<String,HashMap<String,Integer>>();
 
+	/* string variable store the name of artistList and hashMap<String,Integer> keep track of the number of appearance of certain word 
+	 * in the corresponding artistList
+	 */
 	public static HashMap<String, HashMap<String,Integer>> artistList = new HashMap<String,HashMap<String,Integer>>();
+	
+	/* string variable store the name of subgenre and hashMap<String,Integer> keep track of the number of appearance of certain word 
+	 * in the corresponding subgenre
+	 */
+	public static HashMap<String, HashMap<String,Integer>> subgenre = new HashMap<String,HashMap<String,Integer>>();;
 
+	/*
+	 *   key value is the subgenre, the value is the genre that subgenre belongs to
+	 */
 	public static HashMap<String, String> genreSubgenreRelation = new HashMap<String,String>();
 
-
+	/*
+	 *   key value is the Subgenre, the value is the artists that are classified under specific subgenre
+	 */
 	public static HashMap<String, ArrayList<String>>ArtistSubgenre = new HashMap<String, ArrayList<String>>();
 	
+	/*
+	 *   key value is the genre, the value is the artists that are classified under specific genre
+	 */
 	public static HashMap<String, ArrayList<String>>Artistgenre = new HashMap<String, ArrayList<String>>();
-	public static HashMap<String, HashMap<String,Integer>> subgenre = new HashMap<String,HashMap<String,Integer>>();;
+	
 
 
 	public static int genreCount = 0 ;
@@ -110,9 +110,8 @@ public class huffman {
 	public static int subgenreCount = 0 ;
 
 	public static int artistCount = 0 ;
-
-	public static HashMap<String, HashMap<String,Integer>> artists;
-
+	
+	
 	public static String CurrentArtists = null;
 
 	public static String CurrentGenre = null;
@@ -120,8 +119,7 @@ public class huffman {
 	public static String CurrentSubGenre = null;
 
 
-	// shall be  replaced in our case;
-
+    // the collection of all of the words read in the file
 	public static HashMap<String,Integer> countHolder;
 
 	/*
@@ -129,7 +127,6 @@ public class huffman {
 	 */
 	public static Queue<GraphNode> queue = new PriorityQueue<GraphNode>();
 
-	//public static HashMap<String,String> encodeString = new HashMap<String,String>();
 
 	public static void main (String [] args) throws Exception 
 	{
@@ -147,6 +144,9 @@ public class huffman {
 			//	Scanner scanning = new Scanner( file);
 			BufferedReader reader = new BufferedReader(file);
 
+			/* first scan build the lyric library in the file
+			 * 
+			 */
 			while((temp=reader.readLine())!= null)
 			{
 				//	System.out.println(temp);
@@ -176,7 +176,9 @@ public class huffman {
 			e.printStackTrace();
 		}
 
-		// doing parse for genre
+		/* second scan 
+		 *  
+		 */
 		try{
 			// shall be the same file
 			FileReader fileTemp2 = new FileReader("src/input.txt");
@@ -185,6 +187,9 @@ public class huffman {
 
 			while((temp=reader.readLine())!= null)
 			{
+				/*  ++ symbol is followed by the genre name
+				 * 
+				 */
 				if(!temp.isEmpty()&&temp.charAt(0)=='+')
 				{
 					if(temp.contains("++"))
@@ -198,10 +203,12 @@ public class huffman {
 							genre.put(String.copyValueOf(CurrentGenre.toCharArray()), new HashMap<String,Integer>());
 							// put all word into genre library to build the huffman coding;
 							genre.get(CurrentGenre).putAll(countHolder);
+						
 							Artistgenre.put(CurrentGenre, new ArrayList<String>());
 
 
 							genres[genreCount] = String.copyValueOf(CurrentGenre.toCharArray());
+							
 							genreCount++;
 
 							if(!(genreCount<3))
@@ -213,6 +220,9 @@ public class huffman {
 						continue;
 					}
 				}
+				/*
+				 *  << symbol is followed by the subgenre
+				 */
 				if(!temp.isEmpty()&&temp.charAt(0)=='<')
 				{
 					if(temp.contains("<<"))
@@ -223,16 +233,14 @@ public class huffman {
 
 
 							CurrentSubGenre = String.copyValueOf(temp.substring(3).toLowerCase().toCharArray());
-
+							
+							// associate subgenre with artist
 							ArtistSubgenre.put(CurrentSubGenre, new ArrayList<String>());
 
-							// associate the subgenre with its genre
-
-
-
+							// asscociate subenre with genre
 							genreSubgenreRelation.put(String.copyValueOf(CurrentSubGenre.toCharArray()), CurrentGenre);
 
-							subgenre.put(String.copyValueOf(CurrentSubGenre.toLowerCase().toCharArray()), new HashMap<String,Integer>());
+							subgenre.put(String.copyValueOf(CurrentSubGenre.toCharArray()), new HashMap<String,Integer>());
 							// dump all words into current subgenre library
 							subgenre.get(CurrentSubGenre).putAll(countHolder);
 
@@ -251,6 +259,9 @@ public class huffman {
 						continue;
 					}
 				}
+				/*
+				 * >> symbol is folloed by the author
+				 */
 				if(!temp.isEmpty()&&temp.charAt(0)=='>')
 				{
 					if(temp.contains(">>"))
@@ -263,11 +274,12 @@ public class huffman {
 							//	System.out.println(temp.substring(3));
 
 							CurrentArtists = String.copyValueOf(temp.substring(3).toLowerCase().toCharArray());
+							
 							ArtistSubgenre.get(CurrentSubGenre).add(CurrentArtists);
 							
 							Artistgenre.get(CurrentGenre).add(CurrentArtists);
 
-							artistList.put(String.copyValueOf(CurrentArtists.toLowerCase().toCharArray()), new HashMap<String,Integer>());
+							artistList.put(String.copyValueOf(CurrentArtists.toCharArray()), new HashMap<String,Integer>());
 							// dump all words into current subgenre library
 							artistList.get(CurrentArtists).putAll(countHolder);
 
@@ -289,6 +301,9 @@ public class huffman {
 
 				String[] list = temp.split("[^a-zA-Z']+");
 				int len = list.length;
+				/* keep track of word count in specified hashMap<String, Integer>
+				 * 
+				 */
 				for(int  i = 0 ; i < len ; i++)
 				{	
 					String lowercase = list[i].toLowerCase();
@@ -314,29 +329,36 @@ public class huffman {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		printForGenre(treeHolder);
+		/*
+		 * compute block for the entire library
+		 */
+		int BlockCode ;
+		BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
+		
+		printForGenre(BlockCode);
 		System.out.println();
-		printForSubGenre();
+		
+		printForSubGenre(BlockCode);
 		System.out.println();
 
-		printForArtist();
+		printForArtist(BlockCode);
 		System.out.println();
 		System.out.println();
 		System.out.println();
 		System.out.println("start doing cross comparison -----------------------------------------------------------------------------");
 
-		crossRatioOnSUbgenre();
+		crossRatioOnSUbgenre(BlockCode);
 		System.out.println();
 		System.out.println();
 		System.out.println();
 		System.out.println("start doing author  comparison on subgenre -----------------------------------------------------------------------------");
 
-		SubGenreRepresentativeAritist();
+		SubGenreRepresentativeAritist(BlockCode);
 		System.out.println();
 		System.out.println();
 		System.out.println();
 		System.out.println("start doing author  comparison on genre-----------------------------------------------------------------------------");
-		GenreRepresentativeAritist();
+		GenreRepresentativeAritist(BlockCode);
 
 	}
 	
@@ -345,7 +367,7 @@ public class huffman {
 	
 	
 	
-	public static void SubGenreRepresentativeAritist()
+	public static void SubGenreRepresentativeAritist(int BlockCode)
 	{
 
 		HashMap<String, Double> authorPair = new HashMap<String,Double >();
@@ -364,8 +386,7 @@ public class huffman {
 			for (int i = 0 ; i<authorCollec.size();i++)
 			{
 				HashMap<String,String> encoding = buildEncode(artistList.get(authorCollec.get(i)));
-				int BlockCode ;
-				BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
+				
 
 				int huffcodeEncodingLen = computeLength(subgenre.get(subgenreName),encoding);
 
@@ -412,7 +433,7 @@ public class huffman {
 	}
 	
 
-	public static void GenreRepresentativeAritist()
+	public static void GenreRepresentativeAritist(int BlockCode)
 	{
 
 		HashMap<String, Double> authorPair = new HashMap<String,Double >();
@@ -431,8 +452,7 @@ public class huffman {
 			for (int i = 0 ; i<authorCollec.size();i++)
 			{
 				HashMap<String,String> encoding = buildEncode(artistList.get(authorCollec.get(i)));
-				int BlockCode ;
-				BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
+				
 
 				int huffcodeEncodingLen = computeLength(genre.get(genreName),encoding);
 
@@ -445,7 +465,6 @@ public class huffman {
 			Arrays.sort(tobeSorted);
 			double firstPrice = tobeSorted[0];
 			double secondPrice = tobeSorted[1];
-
 			double thirdPrice = tobeSorted[2];
 
 			Iterator<String> itt = authorPair.keySet().iterator();
@@ -479,7 +498,6 @@ public class huffman {
 	}
 	
 	
-	
 
 	public static HashMap<String,String> buildEncode( HashMap<String, Integer> pair)
 	{
@@ -491,21 +509,16 @@ public class huffman {
 		HashMap<String,String> encoding  =  new HashMap<String,String>();
 		preOrderTraversal(root,encoding);
 		queue.clear();
-
 		return encoding;
 	}
 
-	public static void crossRatioOnSUbgenreHelper (String genreName, ArrayList<String> subGenrename)
+	public static void crossRatioOnSUbgenreHelper (String genreName, ArrayList<String> subGenrename,int BlockCode)
 	{
 		for (int i = 0 ; i < 4;i++)
 		{
 			String subGenre = subGenrename.get(i);
 
 			HashMap<String,String> encoding = buildEncode(subgenre.get(subGenre));
-			int BlockCode ;
-
-			BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
-
 
 			for(int j =0 ; j< 4;j++)
 			{
@@ -528,7 +541,7 @@ public class huffman {
 		}
 	}
 
-	public static void crossRatioOnSUbgenre()
+	public static void crossRatioOnSUbgenre(int BlockCode)
 	{
 		String firstGenre = genres[0];
 		String secondGenre = genres[1];
@@ -551,15 +564,15 @@ public class huffman {
 		}
 		System.out.println("doing the first genre cross comparison ----------------------------------");
 
-		crossRatioOnSUbgenreHelper(firstGenre,subGenrename1);
+		crossRatioOnSUbgenreHelper(firstGenre,subGenrename1,BlockCode);
 		System.out.println();
 		System.out.println();
 		System.out.println("doing the second genre cross comparison ----------------------------------");
-		crossRatioOnSUbgenreHelper(secondGenre,subGenrename2);
+		crossRatioOnSUbgenreHelper(secondGenre,subGenrename2,BlockCode);
 
 	}
 
-	public static void printForArtist() 
+	public static void printForArtist(int BlockCode) 
 	{
 		Set<String> artistSet = artistList.keySet();
 
@@ -572,9 +585,8 @@ public class huffman {
 			loopCount++;
 			HashMap<String,String> encoding = buildEncode(artistList.get(AuthorName));
 
-			int BlockCode ;
-			BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
 			int huffcodeEncodingLen = computeLength(artistList.get(AuthorName),encoding);
+			
 			int BlockCodeLength = BlockCode*wordCount(artistList.get(AuthorName));
 			//	System.out.println("The number of leadNode is "  + coutingLeafNode(root));
 			System.out.println("start printing BLocking code for Artissts " + loopCount +"-----------------------------------");
@@ -589,7 +601,7 @@ public class huffman {
 	}
 
 
-	public static void printForSubGenre() 
+	public static void printForSubGenre(int BlockCode) 
 	{
 		Set<String> SubgenreSet = subgenre.keySet();
 
@@ -603,9 +615,6 @@ public class huffman {
 			loopCount++;
 			HashMap<String,String> encoding = buildEncode(subgenre.get(genreName));
 
-
-			int BlockCode ;
-			BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
 			int huffcodeEncodingLen = computeLength(subgenre.get(genreName),encoding);
 			int BlockCodeLength = BlockCode*wordCount(subgenre.get(genreName));
 			//	System.out.println("The number of leadNode is "  + coutingLeafNode(root));
@@ -621,11 +630,9 @@ public class huffman {
 	}
 
 
-	public static void printForGenre(ArrayList<GraphNode> treeHolder) 
+	public static void printForGenre(int BlockCode) 
 	{
 		Set<String> genreSet = genre.keySet();
-
-		GraphNode root = null;
 
 		Iterator<String> iterr = genreSet.iterator();
 		int loopCount = 0;
@@ -635,9 +642,7 @@ public class huffman {
 			loopCount++;
 			//genre.get(genreName)
 			HashMap<String,String> encoding = buildEncode(genre.get(genreName));	
-			int BlockCode ;
-
-			BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
+			
 			int huffcodeEncodingLen = computeLength(genre.get(genreName),encoding);
 
 			int BlockCodeLength = BlockCode*wordCount(genre.get(genreName));
@@ -669,6 +674,7 @@ public class huffman {
 		}
 		return wordCount;
 	}
+	
 	public static int computeLength(HashMap<String, Integer> map,HashMap<String,String> map2)
 	{
 		Set<String> keyset = map.keySet();
@@ -689,6 +695,7 @@ public class huffman {
 		{
 
 			map.put(node.ch, node.encoding);
+			
 			return node.encoding.length();
 		}
 		return preOrderTraversal(node.left,map)+preOrderTraversal(node.right,map);
@@ -805,18 +812,3 @@ public class huffman {
 
 }
 
-
-
-/*
-public static int  coutingLeafNode (GraphNode node)
-{
-
-	if(node.isLeaf())
-	{
-		System.out.println("it is leafNode @!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-		return 1;
-	}
-
-	return coutingLeafNode(node.left)+coutingLeafNode(node.right);
-
-}*/
