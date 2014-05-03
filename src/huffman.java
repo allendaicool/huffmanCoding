@@ -65,7 +65,7 @@ public class huffman {
 		}
 	}
 
-	
+
 	/*
 	 * library 
 	 */
@@ -82,7 +82,7 @@ public class huffman {
 	 * in the corresponding artistList
 	 */
 	public static HashMap<String, HashMap<String,Integer>> artistList = new HashMap<String,HashMap<String,Integer>>();
-	
+
 	/* string variable store the name of subgenre and hashMap<String,Integer> keep track of the number of appearance of certain word 
 	 * in the corresponding subgenre
 	 */
@@ -97,12 +97,12 @@ public class huffman {
 	 *   key value is the Subgenre, the value is the artists that are classified under specific subgenre
 	 */
 	public static HashMap<String, ArrayList<String>>ArtistSubgenre = new HashMap<String, ArrayList<String>>();
-	
+
 	/*
 	 *   key value is the genre, the value is the artists that are classified under specific genre
 	 */
 	public static HashMap<String, ArrayList<String>>Artistgenre = new HashMap<String, ArrayList<String>>();
-	
+
 
 
 	public static int genreCount = 0 ;
@@ -110,8 +110,8 @@ public class huffman {
 	public static int subgenreCount = 0 ;
 
 	public static int artistCount = 0 ;
-	
-	
+
+
 	public static String CurrentArtists = null;
 
 	public static String CurrentGenre = null;
@@ -119,7 +119,7 @@ public class huffman {
 	public static String CurrentSubGenre = null;
 
 
-    // the collection of all of the words read in the file
+	// the collection of all of the words read in the file
 	public static HashMap<String,Integer> countHolder;
 
 	/*
@@ -203,12 +203,12 @@ public class huffman {
 							genre.put(String.copyValueOf(CurrentGenre.toCharArray()), new HashMap<String,Integer>());
 							// put all word into genre library to build the huffman coding;
 							genre.get(CurrentGenre).putAll(countHolder);
-						
+
 							Artistgenre.put(CurrentGenre, new ArrayList<String>());
 
 
 							genres[genreCount] = String.copyValueOf(CurrentGenre.toCharArray());
-							
+
 							genreCount++;
 
 							if(!(genreCount<3))
@@ -233,7 +233,7 @@ public class huffman {
 
 
 							CurrentSubGenre = String.copyValueOf(temp.substring(3).toLowerCase().toCharArray());
-							
+
 							// associate subgenre with artist
 							ArtistSubgenre.put(CurrentSubGenre, new ArrayList<String>());
 
@@ -274,9 +274,9 @@ public class huffman {
 							//	System.out.println(temp.substring(3));
 
 							CurrentArtists = String.copyValueOf(temp.substring(3).toLowerCase().toCharArray());
-							
+
 							ArtistSubgenre.get(CurrentSubGenre).add(CurrentArtists);
-							
+
 							Artistgenre.get(CurrentGenre).add(CurrentArtists);
 
 							artistList.put(String.copyValueOf(CurrentArtists.toCharArray()), new HashMap<String,Integer>());
@@ -334,10 +334,10 @@ public class huffman {
 		 */
 		int BlockCode ;
 		BlockCode = ((int) Math.ceil(Math.log(countHolder.size())/Math.log(2)));
-		
+
 		printForGenre(BlockCode);
 		System.out.println();
-		
+
 		printForSubGenre(BlockCode);
 		System.out.println();
 
@@ -361,12 +361,10 @@ public class huffman {
 		GenreRepresentativeAritist(BlockCode);
 
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
 	public static void SubGenreRepresentativeAritist(int BlockCode)
 	{
 
@@ -386,13 +384,12 @@ public class huffman {
 			for (int i = 0 ; i<authorCollec.size();i++)
 			{
 				HashMap<String,String> encoding = buildEncode(artistList.get(authorCollec.get(i)));
-				
+
 
 				int huffcodeEncodingLen = computeLength(subgenre.get(subgenreName),encoding);
 
 				int BlockCodeLength = BlockCode*wordCount(subgenre.get(subgenreName));
 				double ratio = (double)huffcodeEncodingLen/BlockCodeLength;
-				System.out.println(ratio);
 				tobeSorted[i]=ratio;
 				authorPair.put(authorCollec.get(i), ratio);
 			}
@@ -409,21 +406,21 @@ public class huffman {
 				String temp1 = itt.next();
 				if(authorPair.get(temp1)==firstPrice)
 				{
-					System.out.println("start printing first representative author on subgenre" +subgenreName+ "is "+" -----------------------------------");
+					System.out.println("start printing first representative author on subgenre  " +subgenreName+ "  is "+" -----------------------------------");
 					System.out.println(temp1);
 					System.out.println("compression ratio is " + firstPrice + "\n");
 
 				}
 				if(authorPair.get(temp1)==secondPrice)
 				{
-					System.out.println("start printing second representative author on subgenre" +subgenreName+ "is "+" -----------------------------------");
+					System.out.println("start printing second representative author on subgenre  " +subgenreName+ " is "+" -----------------------------------");
 					System.out.println(temp1);
 					System.out.println("compression ratio is " + secondPrice + "\n");
 
 				}
 				if(authorPair.get(temp1)==thirdPrice)
 				{
-					System.out.println("start printing third representative author on subgenre" +subgenreName+ "is "+" -----------------------------------");
+					System.out.println("start printing third representative author on subgenre  " +subgenreName+ " is "+" -----------------------------------");
 					System.out.println(temp1);
 					System.out.println("compression ratio is " + thirdPrice + "\n");		
 				}
@@ -431,7 +428,7 @@ public class huffman {
 		}
 
 	}
-	
+
 
 	public static void GenreRepresentativeAritist(int BlockCode)
 	{
@@ -452,13 +449,12 @@ public class huffman {
 			for (int i = 0 ; i<authorCollec.size();i++)
 			{
 				HashMap<String,String> encoding = buildEncode(artistList.get(authorCollec.get(i)));
-				
+
 
 				int huffcodeEncodingLen = computeLength(genre.get(genreName),encoding);
 
 				int BlockCodeLength = BlockCode*wordCount(genre.get(genreName));
 				double ratio = (double)huffcodeEncodingLen/BlockCodeLength;
-				System.out.println(ratio);
 				tobeSorted[i]=ratio;
 				authorPair.put(authorCollec.get(i), ratio);
 			}
@@ -496,8 +492,8 @@ public class huffman {
 		}
 
 	}
-	
-	
+
+
 
 	public static HashMap<String,String> buildEncode( HashMap<String, Integer> pair)
 	{
@@ -512,6 +508,7 @@ public class huffman {
 		return encoding;
 	}
 
+	/*
 	public static void crossRatioOnSUbgenreHelper (String genreName, ArrayList<String> subGenrename,int BlockCode)
 	{
 		for (int i = 0 ; i < 4;i++)
@@ -540,16 +537,44 @@ public class huffman {
 
 		}
 	}
-
+*/
 	public static void crossRatioOnSUbgenre(int BlockCode)
 	{
-		String firstGenre = genres[0];
-		String secondGenre = genres[1];
-		ArrayList<String> subGenrename1 = new ArrayList<String>();
-		ArrayList<String> subGenrename2 = new ArrayList<String>();
+		
 
 		Set<String> SubgenreSet = subgenre.keySet();
 		Iterator<String> iter = SubgenreSet.iterator();
+		System.out.println("\nstart doing  cross  comparison !!!!!!!!###### -----------------------------------");
+		int loopcount = 0 ;
+		while ( iter.hasNext())
+		{
+			String outSubGenre = iter.next();
+			//Set<String> SubgenreSet2 = subgenre.keySet();
+			Iterator<String> iter2 = SubgenreSet.iterator();
+			HashMap<String,String> encoding = buildEncode(subgenre.get(outSubGenre));
+			
+			while(iter2.hasNext())
+			{
+				String InnersubGenre = iter2.next();
+				int huffcodeEncodingLen = computeLength(subgenre.get(InnersubGenre),encoding);
+
+				int BlockCodeLength = BlockCode*wordCount(subgenre.get(InnersubGenre));
+				System.out.println(outSubGenre);
+				System.out.println(InnersubGenre);
+				System.out.println ((double)huffcodeEncodingLen/BlockCodeLength+"\n");
+				loopcount++;
+			}
+
+		}
+		System.out.println("End doing  cross  comparison !!!!!!!!###### -----------------------------------" + loopcount +"\n");
+
+	}
+/*
+ * String firstGenre = genres[0];
+		String secondGenre = genres[1];
+		ArrayList<String> subGenrename1 = new ArrayList<String>();
+		ArrayList<String> subGenrename2 = new ArrayList<String>();
+ * Iterator<String> iter = SubgenreSet.iterator();
 		while(iter.hasNext())
 		{
 			String subGenre = iter.next();
@@ -562,40 +587,37 @@ public class huffman {
 				subGenrename2.add(subGenre);
 			}
 		}
-		System.out.println("doing the first genre cross comparison ----------------------------------");
+		System.out.println("doing the first subgenre cross comparison ----------------------------------");
 
 		crossRatioOnSUbgenreHelper(firstGenre,subGenrename1,BlockCode);
 		System.out.println();
 		System.out.println();
-		System.out.println("doing the second genre cross comparison ----------------------------------");
+		System.out.println("doing the second subgenre cross comparison ----------------------------------");
 		crossRatioOnSUbgenreHelper(secondGenre,subGenrename2,BlockCode);
-
-	}
-
+ */
 	public static void printForArtist(int BlockCode) 
 	{
 		Set<String> artistSet = artistList.keySet();
 
 		Iterator<String> iterr = artistSet.iterator();
-		int loopCount = 0;
 		while(iterr.hasNext())
 		{		
 			String AuthorName = iterr.next();
 
-			loopCount++;
 			HashMap<String,String> encoding = buildEncode(artistList.get(AuthorName));
 
 			int huffcodeEncodingLen = computeLength(artistList.get(AuthorName),encoding);
-			
+
+
 			int BlockCodeLength = BlockCode*wordCount(artistList.get(AuthorName));
 			//	System.out.println("The number of leadNode is "  + coutingLeafNode(root));
-			System.out.println("start printing BLocking code for Artissts " + loopCount +"-----------------------------------");
+			System.out.println("start printing BLocking code for Artissts " + AuthorName +"-----------------------------------");
 			System.out.println(BlockCodeLength);
 			System.out.println("end printting BLocking code -----------------------------------");
 			System.out.println("start printing huffcode code -----------------------------------");
 
 			System.out.println(huffcodeEncodingLen);
-			System.out.println("end printing huffcode code Artists " + loopCount +"-----------------------------------");
+			System.out.println("end printing huffcode code Artists " + AuthorName +"-----------------------------------");
 			System.out.println("compression ratio is " + (double)huffcodeEncodingLen/BlockCodeLength+"\n");
 		}
 	}
@@ -604,64 +626,99 @@ public class huffman {
 	public static void printForSubGenre(int BlockCode) 
 	{
 		Set<String> SubgenreSet = subgenre.keySet();
-
-
+		double maxValue = Double.MIN_VALUE;
+		double minValue = Double.MAX_VALUE;
 		Iterator<String> iterr = SubgenreSet.iterator();
-		int loopCount = 0;
+		String mostDiverse = null;
+		String leastDiverse = null ;
 		while(iterr.hasNext())
 		{		
 
 			String genreName = iterr.next();
-			loopCount++;
 			HashMap<String,String> encoding = buildEncode(subgenre.get(genreName));
 
 			int huffcodeEncodingLen = computeLength(subgenre.get(genreName),encoding);
 			int BlockCodeLength = BlockCode*wordCount(subgenre.get(genreName));
+
+			double compressionRatio = (double)huffcodeEncodingLen/BlockCodeLength;
+			if(compressionRatio >maxValue )
+			{
+				maxValue = compressionRatio ;
+				mostDiverse = genreName;
+			}
+			if(compressionRatio<minValue)
+			{
+				minValue = compressionRatio ;
+				leastDiverse = genreName;
+			}
 			//	System.out.println("The number of leadNode is "  + coutingLeafNode(root));
-			System.out.println("start printing BLocking code for subgenre " + loopCount +"-----------------------------------");
+			System.out.println("start printing BLocking code for subgenre " + genreName +"-----------------------------------");
 			System.out.println(BlockCodeLength);
 			System.out.println("end printting BLocking code -----------------------------------");
 			System.out.println("start printing huffcode code -----------------------------------");
 
 			System.out.println(huffcodeEncodingLen);
-			System.out.println("end printing huffcode code subgenre " + loopCount +"-----------------------------------");
-			System.out.println("compression ratio is " + (double)huffcodeEncodingLen/BlockCodeLength+"\n");
+			System.out.println("end printing huffcode code subgenre " + genreName +"-----------------------------------");
+			System.out.println("compression ratio is " + compressionRatio+"\n");
 		}
+		System.out.println(" *********************************************************************************8");
+		System.out.println("the most diverse subgenre: "+ mostDiverse + " with the compression ratio equal to " + maxValue );
+		System.out.println(" *********************************************************************************8");
+
+		System.out.println(" *********************************************************************************8");
+		System.out.println("the lease diverse subgenre is " +  leastDiverse+ " with the compression ratio equal to " + minValue );
+		System.out.println(" *********************************************************************************8");
 	}
 
 
 	public static void printForGenre(int BlockCode) 
 	{
 		Set<String> genreSet = genre.keySet();
+		double maxValue = Double.MIN_VALUE;
+		String mostDiverse = null;
+		double minValue = Double.MAX_VALUE;
+		String LeastDiverse = null;
 
 		Iterator<String> iterr = genreSet.iterator();
-		int loopCount = 0;
 		while(iterr.hasNext())
 		{		
 			String genreName = iterr.next();
-			loopCount++;
 			//genre.get(genreName)
 			HashMap<String,String> encoding = buildEncode(genre.get(genreName));	
-			
-			int huffcodeEncodingLen = computeLength(genre.get(genreName),encoding);
 
+			int huffcodeEncodingLen = computeLength(genre.get(genreName),encoding);
 			int BlockCodeLength = BlockCode*wordCount(genre.get(genreName));
+			double compressionRatio = (double)huffcodeEncodingLen/BlockCodeLength;
+			if(compressionRatio >maxValue )
+			{
+				maxValue = compressionRatio ;
+				mostDiverse = genreName;
+			}
+			if(compressionRatio < minValue )
+			{
+				minValue = compressionRatio ;
+				LeastDiverse = genreName;
+			}
 			//	System.out.println("The number of leadNode is "  + coutingLeafNode(root));
-			System.out.println("start printing BLocking code for genre " + loopCount +"-----------------------------------");
+			System.out.println("start printing BLocking code for genre " + genreName +"-----------------------------------");
 			System.out.println(BlockCodeLength);
 			System.out.println("end printting BLocking code -----------------------------------");
 			System.out.println("start printing huffcode code -----------------------------------");
 
 			System.out.println(huffcodeEncodingLen);
-			System.out.println("end printing huffcode code genre " + loopCount +"-----------------------------------");
-			System.out.println("compression ratio is " + (double)huffcodeEncodingLen/BlockCodeLength+"\n");
+			System.out.println("end printing huffcode code genre " + genreName +"-----------------------------------");
+			System.out.println("compression ratio is " + compressionRatio+"\n");
 
 		}
 		//System.out.println(root.frequency);
-		System.out.println("\naritst number is " + artistCount);
-		System.out.println("genre number is " + genreCount);
-		System.out.println("genre number is " + subgenreCount);
+		System.out.println(" *********************************************************************************8");
+		System.out.println("the most diverse genre is " + mostDiverse + " with the compression ratio equal to " + maxValue );
+		System.out.println(" *********************************************************************************8");
+		System.out.println(" *********************************************************************************8");
+		System.out.println("the least diverse genre is " + LeastDiverse + " with the compression ratio equal to " + minValue );
+		System.out.println(" *********************************************************************************8");
 	}
+
 	public static int wordCount (HashMap<String,Integer> map)
 	{
 		Set<String> keyset = map.keySet();
@@ -674,7 +731,7 @@ public class huffman {
 		}
 		return wordCount;
 	}
-	
+
 	public static int computeLength(HashMap<String, Integer> map,HashMap<String,String> map2)
 	{
 		Set<String> keyset = map.keySet();
@@ -695,7 +752,7 @@ public class huffman {
 		{
 
 			map.put(node.ch, node.encoding);
-			
+
 			return node.encoding.length();
 		}
 		return preOrderTraversal(node.left,map)+preOrderTraversal(node.right,map);
